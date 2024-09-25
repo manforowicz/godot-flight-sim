@@ -1,0 +1,65 @@
+[gd_scene load_steps=13 format=3 uid="uid://c5n1q4l65n7k4"]
+
+[ext_resource type="PackedScene" uid="uid://clu6mcvql5ccp" path="res://assets/rc_plane_1.glb" id="1_161mo"]
+[ext_resource type="PackedScene" uid="uid://bq1np0jm110kd" path="res://assets/Pine Trees.glb" id="2_1t7u7"]
+[ext_resource type="Texture2D" uid="uid://cpmrpi8rpurby" path="res://assets/grassy_cobblestone_diff_1k.png" id="2_7twry"]
+[ext_resource type="Texture2D" uid="uid://d3xtq51ue018y" path="res://assets/grassy_cobblestone_nor_gl_1k.png" id="3_kgodf"]
+[ext_resource type="Texture2D" uid="uid://d083jlydqv4ml" path="res://assets/grassy_cobblestone_rough_1k.png" id="4_ab4wf"]
+[ext_resource type="Script" path="res://Plane.gd" id="5_1ghgs"]
+
+[sub_resource type="Environment" id="Environment_hebm0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s6dq1"]
+albedo_texture = ExtResource("2_7twry")
+roughness_texture = ExtResource("4_ab4wf")
+normal_enabled = true
+normal_texture = ExtResource("3_kgodf")
+uv1_scale = Vector3(100, 100, 100)
+grow_amount = -16.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_k6deu"]
+material = SubResource("StandardMaterial3D_s6dq1")
+size = Vector3(1000, 1, 1000)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ylfxx"]
+size = Vector3(10000, 1, 10000)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_5vonc"]
+friction = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hff4y"]
+size = Vector3(3.2869, 8.77259, 2.06432)
+
+[node name="world" type="WorldEnvironment"]
+environment = SubResource("Environment_hebm0")
+
+[node name="Pine Trees" parent="." instance=ExtResource("2_1t7u7")]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+
+[node name="ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_k6deu")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ground"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ground/StaticBody3D"]
+shape = SubResource("BoxShape3D_ylfxx")
+
+[node name="sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.896487, 0.443071, 0, -0.443071, -0.896487, 0, 0, 0)
+
+[node name="Plane" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.989016, -0.147809, 0, 0.147809, 0.989016, 0, 1.395, 0)
+physics_material_override = SubResource("PhysicsMaterial_5vonc")
+linear_velocity = Vector3(0, 3.105, 0)
+constant_force = Vector3(0, -1, 0)
+script = ExtResource("5_1ghgs")
+
+[node name="Camera3D" type="Camera3D" parent="Plane"]
+transform = Transform3D(1, 0, 0, 0, 1, 1.49012e-08, 0, -1.49012e-08, 1, 0, 3.273, 10.82)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Plane"]
+transform = Transform3D(1, 0, 0, 0, -0.142767, 0.989756, 0, -0.989756, -0.142767, 0, 0, 2.00582)
+shape = SubResource("BoxShape3D_hff4y")
+
+[node name="rc_plane_1" parent="Plane" instance=ExtResource("1_161mo")]
